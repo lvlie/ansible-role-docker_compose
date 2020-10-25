@@ -1,0 +1,19 @@
+galaxy_info:
+  author: Leon (lvlie)
+  description: Installs and runs compose
+  issue_tracker_url: https://github.com/lvlie/ansible-role-docker_compose/issues
+  license: Apache
+  min_ansible_version: 2.7
+  platforms:
+  - name: Ubuntu
+    versions:
+    - focal
+  galaxy_tags:
+  - docker
+  - compose
+  - install
+  - upgrade
+  - update
+  - system
+
+dependencies: []

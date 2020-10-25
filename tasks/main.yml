@@ -1,0 +1,44 @@
+---
+# tasks file for ansible-role-docker_compose
+- name: Install docker-compose
+  package:
+    name: docker-compose
+    state: present
+
+- name: Create directories
+  file:
+    path: '{{ item }}'
+    state: directory
+    mode: '0750'
+  loop:
+    - ~leon/compose-files/
+    - ~leon/docker/
+
+- name: Get personal repo for compose files
+  git:
+    dest: ~leon/compose-files/
+    repo: https://github.com/lvlie/compose-files.git
+    force: true
+
+- name: Copy over correct compose file for this system
+  copy:
+    src: ~leon/compose-files/{{ ansible_hostname }}/docker-compose.yml
+    dest: ~leon/docker/
+    force: true
+    remote_src: true
+    owner: leon
+    group: leon
+    mode: '0640'
+
+- name: Pull/restart all containers in compose
+  docker_compose:
+    project_src: ~leon/docker/
+    state: present
+    pull: true
+    restarted: true
+
+- name: Prune dangling images
+  docker_prune:
+    images: yes
+    images_filters:
+      dangling: true
