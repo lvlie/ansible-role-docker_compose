@@ -7,32 +7,32 @@
 
 - name: Create directories
   file:
-    path: '{{ item }}'
+    path: "{{ item }}"
     state: directory
-    mode: '0750'
+    mode: "0750"
   loop:
-    - ~leon/compose-files/
-    - ~leon/docker/
+    - ~{{ ansible_user }}/compose-files/
+    - ~{{ ansible_user }}/docker/
 
 - name: Get personal repo for compose files
   git:
-    dest: ~leon/compose-files/
+    dest: ~{{ ansible_user }}/compose-files/
     repo: https://github.com/lvlie/compose-files.git
     force: true
 
 - name: Copy over correct compose file for this system
   copy:
-    src: ~leon/compose-files/{{ ansible_hostname }}/docker-compose.yml
-    dest: ~leon/docker/
+    src: ~{{ ansible_user }}/compose-files/{{ ansible_hostname }}/docker-compose.yml
+    dest: ~{{ ansible_user }}/docker/
     force: true
     remote_src: true
-    owner: leon
-    group: leon
-    mode: '0640'
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_group }}"
+    mode: "0640"
 
 - name: Pull/restart all containers in compose
   docker_compose:
-    project_src: ~leon/docker/
+    project_src: ~{{ ansible_user }}/docker/
     state: present
     pull: true
     restarted: true
